@@ -19,6 +19,13 @@ interface CustomerAccount {
   id: string;
   business_name: string | null;
   slug: string;
+  // V3RO-118: hybrid booking columns
+  hybrid_rollout_stage?: string;
+  calendar_mode?: string;
+  working_days?: number[] | null;
+  availability_from?: string | null;
+  availability_to?: string | null;
+  availability_timezone?: string;
 }
 
 // ─── Mini calendar ─────────────────────────────────────────────────────────
@@ -206,7 +213,8 @@ const BookingPage = () => {
     queryKey: ["customer_account", slug],
     queryFn: async () => {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/customer_account?slug=eq.${encodeURIComponent(slug!)}&select=id,business_name,slug&limit=1`,
+        // V3RO-118: include hybrid columns for calendar-mode-aware rendering
+        `${SUPABASE_URL}/rest/v1/customer_account?slug=eq.${encodeURIComponent(slug!)}&select=id,business_name,slug,hybrid_rollout_stage,calendar_mode,working_days,availability_from,availability_to,availability_timezone&limit=1`,
         {
           headers: {
             apikey: SUPABASE_ANON_KEY,
@@ -357,9 +365,17 @@ const BookingPage = () => {
                 )}
 
                 {slotsQuery.data?.length === 0 && (
-                  <p className="text-sm text-slate-500 py-2">
-                    No times available on this day — please choose another date.
-                  </p>
+                  <div>
+                    <p className="text-sm text-slate-500 py-2">
+                      No times available on this day — please choose another date.
+                    </p>
+                    {/* V3RO-118: show fallback note if working_days not configured */}
+                    {!accountQuery.data?.working_days?.length && (
+                      <p className="text-xs text-slate-400 mt-1">
+                        Showing default 09:00–17:00 availability. The business owner can customise their hours in their V3RO dashboard.
+                      </p>
+                    )}
+                  </div>
                 )}
 
                 {slotsQuery.data && slotsQuery.data.length > 0 && (
