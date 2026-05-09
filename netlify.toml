@@ -1,4 +1,24 @@
+# Production (main branch) — points at prod Supabase
+# Staging (feature/hybrid-booking-public-app) — points at UAT Supabase
+# Each context bakes its own VITE_ vars into the build at deploy time.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# ── Production context (main → book.v3ro.co.uk) ──────────────────────────────
+[context.production]
+  environment = { VITE_SUPABASE_URL = "https://coolnnxvkbyjaehjeacd.supabase.co", VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvb2xubnh2a2J5amFlaGplYWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwMjkxNjcsImV4cCI6MjA4NzYwNTE2N30.pwFtfFQMcDa1GFvHP_YtwP-P46hV6Ga5J4-QZyCduTg" }
+
+# ── Branch deploy context (feature/hybrid-booking-public-app → staging URL) ──
+[context.branch-deploy]
+  environment = { VITE_SUPABASE_URL = "https://klxltxndehyjznfcumed.supabase.co", VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtseGx0eG5kZWh5anpuZmN1bWVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODE3MDksImV4cCI6MjA5Mzc1NzcwOX0.sZ69nl5RwUTa7oQB7T0kGEE9Iuz6iZ_YcSNyYhCEYIo" }
+
+# ── Deploy preview context (PRs) — also uses UAT ─────────────────────────────
+[context.deploy-preview]
+  environment = { VITE_SUPABASE_URL = "https://klxltxndehyjznfcumed.supabase.co", VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtseGx0eG5kZWh5anpuZmN1bWVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODE3MDksImV4cCI6MjA5Mzc1NzcwOX0.sZ69nl5RwUTa7oQB7T0kGEE9Iuz6iZ_YcSNyYhCEYIo" }
