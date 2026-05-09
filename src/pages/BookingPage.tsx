@@ -269,9 +269,9 @@ const BookingPage = () => {
         },
         body: JSON.stringify({
           customer_account_id: accountQuery.data.id,
-          caller_name: values.caller_name,
-          caller_phone: values.caller_phone,
-          service_description: values.service_description,
+          caller_name: values.caller_name.trim(),
+          caller_phone: values.caller_phone.trim(),
+          service_description: values.service_description.trim(),
           booking_date: dateString,
           booking_time: selectedTime,
           timezone,
